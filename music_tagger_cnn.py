@@ -7,8 +7,8 @@
 - [Music-auto_tagging-keras](https://github.com/keunwoochoi/music-auto_tagging-keras)
 
 '''
-from __future__ import print_function
-from __future__ import absolute_import
+
+
 
 from keras import backend as K
 from keras.layers import Input, Dense

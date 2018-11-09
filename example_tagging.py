@@ -7,7 +7,7 @@ import audio_processor as ap
 import pdb
 
 def sort_result(tags, preds):
-    result = zip(tags, preds)
+    result = list(zip(tags, preds))
     sorted_result = sorted(result, key=lambda x: x[1], reverse=True)
     return [(name, '%5.3f' % score) for name, score in sorted_result]
 
@@ -27,7 +27,7 @@ def main(net):
     is affected by batch. Use multiple, different data 
     samples together (at least 4) for reliable prediction.'''
 
-    print('Running main() with network: %s and backend: %s' % (net, K._BACKEND))
+    print(('Running main() with network: %s and backend: %s' % (net, K._BACKEND)))
     # setting
     audio_paths = ['data/bensound-cute.mp3',
                    'data/bensound-actionable.mp3',
@@ -73,13 +73,13 @@ def main(net):
     start = time.time()
     pred_tags = model.predict(melgrams)
     # print like this...
-    print "Prediction is done. It took %d seconds." % (time.time()-start)
+    print("Prediction is done. It took %d seconds." % (time.time()-start))
     print('Printing top-10 tags for each track...')
     for song_idx, audio_path in enumerate(audio_paths):
         sorted_result = sort_result(tags, pred_tags[song_idx, :].tolist())
         print(audio_path)
-        print(sorted_result[:5])
-        print(sorted_result[5:10])
+        print((sorted_result[:5]))
+        print((sorted_result[5:10]))
         print(' ')
 
     return
@@ -87,5 +87,4 @@ def main(net):
 if __name__ == '__main__':
 
     networks = ['cnn', 'crnn']
-    for net in networks:
-        main(net)
+    main('crnn')

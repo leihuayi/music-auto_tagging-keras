@@ -22,7 +22,7 @@ def main(net):
     is affected by batch. Use multiple, different data 
     samples together (at least 4) for reliable prediction.'''
 
-    print('Running main() with network: %s and backend: %s' % (net, K._BACKEND))
+    print(('Running main() with network: %s and backend: %s' % (net, K._BACKEND)))
     # setting
     audio_paths = ['data/bensound-cute.mp3',
                    'data/bensound-actionable.mp3',
@@ -54,7 +54,7 @@ def main(net):
     print('Predicting features...')
     start = time.time()
     features = model.predict(melgrams)
-    print features[:, :10]
+    print(features[:, :10])
     return
 
 if __name__ == '__main__':
