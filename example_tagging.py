@@ -3,6 +3,7 @@ import numpy as np
 from keras import backend as K
 from music_tagger_cnn import MusicTaggerCNN
 from music_tagger_crnn import MusicTaggerCRNN
+from train_model import retrain_model
 import audio_processor as ap
 import pdb
 
@@ -29,16 +30,12 @@ def main(net):
 
     print(('Running main() with network: %s and backend: %s' % (net, K._BACKEND)))
     # setting
-    audio_paths = ['data/bensound-cute.mp3',
-                   'data/bensound-actionable.mp3',
-                   'data/bensound-dubstep.mp3',
-                   'data/bensound-thejazzpiano.mp3']
-    melgram_paths = ['data/bensound-cute.npy',
-                     'data/bensound-actionable.npy',
-                     'data/bensound-dubstep.npy',
-                     'data/bensound-thejazzpiano.npy']
+    audio_paths = ['/home/manu/Music/Teenagers.mp3',
+                    '/home/manu/Music/Beatit.mp3',
+                    '/home/manu/Music/What_makes_you_Beautiful.mp3',
+                    '/home/manu/Music/SexyChick.mp3']
 
-    tags = ['rock', 'pop', 'alternative', 'indie', 'electronic',
+    oldtags = ['rock', 'pop', 'alternative', 'indie', 'electronic',
             'female vocalists', 'dance', '00s', 'alternative rock', 'jazz',
             'beautiful', 'metal', 'chillout', 'male vocalists',
             'classic rock', 'soul', 'indie rock', 'Mellow', 'electronica',
@@ -50,23 +47,21 @@ def main(net):
             'Progressive rock', '60s', 'rnb', 'indie pop',
             'sad', 'House', 'happy']
 
+    tags = ['rock', 'pop', 'rnb', 'Hip-Hop', 'rap', 'electronic', 'sad']
+
     # prepare data like this
     melgrams = np.zeros((0, 1, 96, 1366))
 
-    if librosa_exists:
-        for audio_path in audio_paths:
-            melgram = ap.compute_melgram(audio_path)
-            melgrams = np.concatenate((melgrams, melgram), axis=0)
-    else:
-        for melgram_path in melgram_paths:
-            melgram = np.load(melgram_path)
-            melgrams = np.concatenate((melgrams, melgram), axis=0)
+    print("Computing melgrams for input audio ...")
+    for audio_path in audio_paths:
+        melgram = ap.compute_melgram(audio_path)
+        melgrams = np.concatenate((melgrams, melgram), axis=0)
 
     # load model like this
     if net == 'cnn':
         model = MusicTaggerCNN(weights='msd')
     elif net == 'crnn':
-        model = MusicTaggerCRNN(weights='msd')
+        model = retrain_model(MusicTaggerCRNN(weights='msd'))
     
     # predict the tags like this
     print('Predicting...')
@@ -76,6 +71,7 @@ def main(net):
     print("Prediction is done. It took %d seconds." % (time.time()-start))
     print('Printing top-10 tags for each track...')
     for song_idx, audio_path in enumerate(audio_paths):
+        # For one song, get list of percentage for the 50 tags
         sorted_result = sort_result(tags, pred_tags[song_idx, :].tolist())
         print(audio_path)
         print((sorted_result[:5]))

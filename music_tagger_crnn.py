@@ -122,7 +122,7 @@ def MusicTaggerCRNN(weights='msd', input_tensor=None,
     # GRU block 1, 2, output
     x = GRU(32, return_sequences=True, name='gru1')(x)
     x = GRU(32, return_sequences=False, name='gru2')(x)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.3, name='dropout_5')(x)
     if include_top:
         x = Dense(50, activation='sigmoid', name='output')(x)
 
